@@ -2,8 +2,6 @@ package telran.java40.forum.model;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +16,6 @@ public class Comment {
 	String user;
 	@Setter
 	String message;
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	LocalDateTime dateCreated = LocalDateTime.now();
 	int likes;
 
