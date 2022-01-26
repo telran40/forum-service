@@ -2,6 +2,7 @@ package telran.java40.forum.service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import telran.java40.forum.dto.NewCommentDto;
 import telran.java40.forum.dto.NewPostDto;
 import telran.java40.forum.dto.PostDto;
 import telran.java40.forum.dto.exceptions.PostNotFoundException;
+import telran.java40.forum.model.Comment;
 import telran.java40.forum.model.Post;
 
 @Service
@@ -67,32 +69,40 @@ public class ForumServiceImpl implements ForumService {
 
 	@Override
 	public void addLike(String id) {
-		// TODO
+		Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
+		post.addLike();
+		postRepository.save(post);
 
 	}
 
 	@Override
 	public PostDto addComment(String id, String author, NewCommentDto newCommentDto) {
-		// TODO
-		return null;
+		Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
+		Comment comment = new Comment(author, newCommentDto.getMessage());
+		post.addComment(comment);
+		postRepository.save(post);
+		return modelMapper.map(post,  PostDto.class);                       
 	}
 
 	@Override
 	public Iterable<PostDto> findPostsByAuthor(String author) {
-		// TODO
-		return null;
+		return postRepository.findByAuthorIgnoreCase(author)
+						.map(p -> modelMapper.map(p, PostDto.class))
+						.collect(Collectors.toList());
 	}
 
 	@Override
 	public Iterable<PostDto> findPostsByTags(List<String> tags) {
-		// TODO
-		return null;
+		return postRepository.findByTagsInIgnoreCase(tags)
+						.map(p -> modelMapper.map(p, PostDto.class))
+						.collect(Collectors.toList());
 	}
 
 	@Override
 	public Iterable<PostDto> findPostsByDates(DatePeriodDto datePeriodDto) {
-		// TODO
-		return null;
+		return postRepository.findByDateCreatedBetween(datePeriodDto.getDateFrom(), datePeriodDto.getDateTo())
+						.map(p -> modelMapper.map(p, PostDto.class))
+						.collect(Collectors.toList());
 	}
 
 }
