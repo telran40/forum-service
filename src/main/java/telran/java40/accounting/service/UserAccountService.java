@@ -17,4 +17,6 @@ public interface UserAccountService {
 	RolesResponseDto changeRolesList(String login, String role, boolean isAddRole);
 	
 	void changePassword(String login, String password);
+	
+	String checkToken(String token);
 }

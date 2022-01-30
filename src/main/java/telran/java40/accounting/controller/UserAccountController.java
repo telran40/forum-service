@@ -1,11 +1,14 @@
 package telran.java40.accounting.controller;
 
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,9 +34,9 @@ public class UserAccountController {
 		return accountService.addUser(userRegisterDto);
 	}
 
-	//FIXME
 	@PostMapping("/login")
-	public UserAccountResponseDto login(String login) {	
+	public UserAccountResponseDto login(Principal principal) {
+		String login = principal.getName();
 		return accountService.getUser(login);
 	}
 
@@ -57,11 +60,10 @@ public class UserAccountController {
 		return accountService.changeRolesList(login, role, false);
 	}
 
-	//FIXME
+	// FIXME
 	@PutMapping("/password")
-	public void changePassword(String login,  String password) {
+	public void changePassword(String login, String password) {
 		accountService.changePassword(login, password);
 	}
-
 
 }
