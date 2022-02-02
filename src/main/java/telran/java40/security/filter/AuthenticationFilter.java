@@ -13,13 +13,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import telran.java40.accounting.dao.UserAccountRepository;
 import telran.java40.accounting.model.UserAccount;
 
 @Service
+@Order(10)
 public class AuthenticationFilter implements Filter {
 
 	UserAccountRepository repository;
@@ -46,7 +49,7 @@ public class AuthenticationFilter implements Filter {
 				response.sendError(401, "User not found");
 				return;
 			}
-			if (!credentials[1].equals(userAccount.getPassword())) {
+			if (!BCrypt.checkpw(credentials[1], userAccount.getPassword())) {
 				response.sendError(401, "User or password not valid");
 				return;
 			}
