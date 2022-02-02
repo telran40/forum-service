@@ -60,10 +60,9 @@ public class UserAccountController {
 		return accountService.changeRolesList(login, role, false);
 	}
 
-	// FIXME
 	@PutMapping("/password")
-	public void changePassword(String login, String password) {
-		accountService.changePassword(login, password);
+	public void changePassword(Principal principal, @RequestHeader("X-Password") String password) {
+		accountService.changePassword(principal.getName(), password);
 	}
 
 }
