@@ -15,22 +15,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
-import telran.java40.accounting.dao.UserAccountRepository;
-import telran.java40.accounting.model.UserAccount;
 import telran.java40.forum.dao.PostRepository;
 import telran.java40.forum.model.Post;
+import telran.java40.security.SecurityContext;
+import telran.java40.security.UserProfile;
 
 @Service
 @Order(50)
 public class DeletePostFilter implements Filter {
 
 	PostRepository postRepository;
-	UserAccountRepository userAccountRepository;
+	SecurityContext securityContext;
 
 	@Autowired
-	public DeletePostFilter(PostRepository postRepository, UserAccountRepository userAccountRepository) {
+	public DeletePostFilter(PostRepository postRepository, SecurityContext securityContext) {
 		this.postRepository = postRepository;
-		this.userAccountRepository = userAccountRepository;
+		this.securityContext = securityContext;
 	}
 
 	@Override
@@ -49,8 +49,8 @@ public class DeletePostFilter implements Filter {
 				return;
 			}
 			String author = post.getAuthor();
-			UserAccount userAccount = userAccountRepository.findById(principal.getName()).get();
-			if (!(principal.getName().equals(author) || userAccount.getRoles().contains("MODERATOR".toUpperCase()))) {
+			UserProfile userProfile = securityContext.getUser(principal.getName());
+			if (!(principal.getName().equals(author) || userProfile.getRoles().contains("MODERATOR".toUpperCase()))) {
 				response.sendError(403);
 				return;
 			}
